@@ -132,11 +132,20 @@ public class City {
 					break;
 			}
 		}
-		/*
 		ResourcesInside[(int)ResourceType.Food] -= ResourcesInside[(int)ResourceType.Population] * S.ResourceUpdateMult;
 		ResourcesInside[(int)ResourceType.Energy] -= ResourcesInside[(int)ResourceType.Population] * S.ResourceUpdateMult;
 		ResourcesInside[(int)ResourceType.Population] += ResourcesInside[(int)ResourceType.Happiness] * S.ResourceUpdateMult;
-		*/
 		return moneyGain;
+	}
+
+	public float PopulationAtWork {
+		get {
+			float f = 0f;
+			for (int i = 0; i < S.CitySize; i++)
+			for (int j = 0; j < S.CitySize; j++) {
+				f += Buildings[i, j].WorkersAtWork;
+			}
+			return f;
+		}
 	}
 }

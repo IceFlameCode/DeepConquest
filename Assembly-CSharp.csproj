@@ -54,9 +54,10 @@
      <Compile Include="Assets\Scripts\GameMechanics\Combat\CombatUnit.cs" />
      <Compile Include="Assets\Scripts\GameMechanics\Combat\CombatUnitData.cs" />
      <Compile Include="Assets\Scripts\GameMechanics\GameData.cs" />
-     <Compile Include="Assets\Scripts\HUD\CamMovement.cs" />
-     <Compile Include="Assets\Scripts\HUD\HUD.cs" />
-     <Compile Include="Assets\Scripts\HUD\TickBox.cs" />
+     <Compile Include="Assets\Scripts\Graphics\CamMovement.cs" />
+     <Compile Include="Assets\Scripts\Graphics\HUD\HUD.cs" />
+     <Compile Include="Assets\Scripts\Graphics\HUD\TickBox.cs" />
+     <Compile Include="Assets\Scripts\Graphics\SkyboxRotation.cs" />
      <Compile Include="Assets\Scripts\Networking\Account.cs" />
      <Compile Include="Assets\Scripts\Networking\Net.cs" />
      <Compile Include="Assets\Scripts\S.cs" />

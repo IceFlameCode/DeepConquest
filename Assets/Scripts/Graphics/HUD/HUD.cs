@@ -286,7 +286,7 @@ public class HUD : MonoBehaviour {
 				GUILayout.Box(capitalize(GameStats.BuildingStats[(int)CurrBuilding.type].WorkerName) + "s " + GameStats.BuildingStats[(int)CurrBuilding.type].WorkerFunction + ": " + CurrBuilding.WorkersAtWork.ToString(),
 				              GUILayout.MaxWidth(200f));
 				MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population] += CurrBuilding.WorkersAtWork;
-				CurrBuilding.WorkersAtWork = Mathf.Round(GUILayout.HorizontalSlider(CurrBuilding.WorkersAtWork, 0f,
+				CurrBuilding.WorkersAtWork = Mathf.Floor(GUILayout.HorizontalSlider(CurrBuilding.WorkersAtWork, 0f,
 				                                                                         GameStats.GetProductivity(CurrBuilding.type, ResourceType.Population, CurrBuilding.Level)));
 				MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population] -= CurrBuilding.WorkersAtWork;
 				if (MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population] < 0f) {
@@ -519,6 +519,17 @@ public class HUD : MonoBehaviour {
 		MainNet.CurrentAccount.Cities[CurrCityID].Name = GUILayout.TextArea(MainNet.CurrentAccount.Cities[CurrCityID].Name);
 		GUILayout.EndHorizontal();
 
+		GUILayout.BeginHorizontal();
+		GUILayout.Box("Employed population: " + MainNet.CurrentAccount.Cities[CurrCityID].PopulationAtWork.ToString());
+		GUILayout.EndHorizontal();
+
+		GUILayout.BeginHorizontal();
+		GUILayout.Box("Unemployed population: " + Mathf.Floor(MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population]).ToString() + " (" +
+		              (100f * Mathf.Floor(MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population]) /
+		              (Mathf.Floor(MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population]) + MainNet.CurrentAccount.Cities[CurrCityID].PopulationAtWork)).ToString() +
+		              "%)");
+		GUILayout.EndHorizontal();
+
 		GUILayout.EndScrollView();
 
 		GUILayout.EndArea();
@@ -537,7 +548,7 @@ public class HUD : MonoBehaviour {
 		for (int i = 0; i < (int)ResourceType.Count; i++) {
 			if ((ResourceType)i == ResourceType.Population)
 				GUI.Box(new Rect(Screen.width / ((float)ResourceType.Count + 1f) * (i + 1f), 0f, Screen.width / ((float)ResourceType.Count + 1f), textHeight),
-				        GameStats.ResourceNames[i] + ": " + ((int)MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[i]).ToString());
+				        "Free population: " + (Mathf.FloorToInt(MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[i])).ToString());
 			else
 				GUI.Box(new Rect(Screen.width / ((float)ResourceType.Count + 1f) * (i + 1f), 0f, Screen.width / ((float)ResourceType.Count + 1f), textHeight),
 			        	GameStats.ResourceNames[i] + ": " + (MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[i]).ToString());
