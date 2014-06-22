@@ -5,7 +5,7 @@ public class Building {
 
 	public BuildingType type = BuildingType.EmptySpace;
 	public int Level = 0;
-	public int WorkersAtWork = 0;
+	public float WorkersAtWork = 0;
 	public float BuildingFinishMoment = 0f;
 	public GameObject BuiltObject;
 	public bool isBeingBuilt = false;
@@ -34,7 +34,7 @@ public class Building {
 		}
 
 		s += (char)(Level + (int)'a');
-		s += (char)(WorkersAtWork + (int)'a');
+		s += (char)((int)WorkersAtWork + (int)'a');
 
 		string bt; // building time
 		if (Time.time >= BuildingFinishMoment) {

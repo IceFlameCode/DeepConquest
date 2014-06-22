@@ -145,6 +145,7 @@ public class Net : MonoBehaviour {
 	                  float money) {
 
 		if (CurrTicket == ticket) {
+			print("Recieved city: population = " + population.ToString());
 			City c = new City(hud.GameStats);
 			c.Name = cityName;
 			c.Decode(code);
@@ -253,10 +254,12 @@ public class Net : MonoBehaviour {
 	}
 
 	[RPC]
-	void ServerAssignWorkersAtWork (string accName, int cityID, int x, int y, int workersToAssign) {
+	void ServerAssignWorkersAtWork (string accName, int cityID, int x, int y, float workersToAssign) {
 		for (int i = 0; i < Accounts.Count; i++) {
 			if (Accounts[i].Name == accName) {
+				Accounts[i].Cities[cityID].ResourcesInside[(int)ResourceType.Population] += Accounts[i].Cities[cityID].Buildings[x, y].WorkersAtWork;
 				Accounts[i].Cities[cityID].Buildings[x, y].WorkersAtWork = workersToAssign;
+				Accounts[i].Cities[cityID].ResourcesInside[(int)ResourceType.Population] -= workersToAssign;
 			}
 		}
 	}

@@ -29,8 +29,7 @@ public class HUD : MonoBehaviour {
 	public Rect AdvancedStatsWindowRect = new Rect(600f, 100f, 600f, 400f);
 	public Rect FromScratchWindowRect = new Rect(600f, 100f, 600f, 400f);
 	public Rect CityStatsWindowRect = new Rect(300f, 100f, 600f, 400f);
-
-	public float TempWorkers = 0f;
+	
 	public float NextWorkerUpdate = 0f;
 	public float NextResourceUpdate = 0f;
 	public float NextCityNameUpdate = 0f;
@@ -52,8 +51,10 @@ public class HUD : MonoBehaviour {
 				if (Input.GetMouseButtonDown(0)) {
 					ShowBuildingWindow = true;
 					CurrBuilding = MainNet.CurrentAccount.Cities[CurrCityID].SelectedBuilding;
-					TempWorkers = MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population] + CurrBuilding.WorkersAtWork;
 				}
+			}
+			for (int i = 0; i < MainNet.CurrentAccount.Cities.Count; i++) {
+				MainNet.CurrentAccount.Cities[i].UpdateBuildings();
 			}
 			MainNet.CurrentAccount.Cities[CurrCityID].UpdateBuildings();
 			if (NextResourceUpdate <= Time.time) {
@@ -284,10 +285,14 @@ public class HUD : MonoBehaviour {
 				GUI.color = Color.white;
 				GUILayout.Box(capitalize(GameStats.BuildingStats[(int)CurrBuilding.type].WorkerName) + "s " + GameStats.BuildingStats[(int)CurrBuilding.type].WorkerFunction + ": " + CurrBuilding.WorkersAtWork.ToString(),
 				              GUILayout.MaxWidth(200f));
-				CurrBuilding.WorkersAtWork = (int)Mathf.Round(GUILayout.HorizontalSlider(CurrBuilding.WorkersAtWork, 0f,
+				MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population] += CurrBuilding.WorkersAtWork;
+				CurrBuilding.WorkersAtWork = Mathf.Round(GUILayout.HorizontalSlider(CurrBuilding.WorkersAtWork, 0f,
 				                                                                         GameStats.GetProductivity(CurrBuilding.type, ResourceType.Population, CurrBuilding.Level)));
-				CurrBuilding.WorkersAtWork = (CurrBuilding.WorkersAtWork > 0) ? CurrBuilding.WorkersAtWork : 0;
-				MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population] = TempWorkers - CurrBuilding.WorkersAtWork;
+				MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population] -= CurrBuilding.WorkersAtWork;
+				if (MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population] < 0f) {
+					CurrBuilding.WorkersAtWork += MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population];
+					MainNet.CurrentAccount.Cities[CurrCityID].ResourcesInside[(int)ResourceType.Population] = 0f;
+				}
 				GUILayout.EndHorizontal();
 			}
 

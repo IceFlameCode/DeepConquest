@@ -110,7 +110,7 @@ public class GameData : MonoBehaviour {
 		BuildingStats[t].BaseProductivity[(int)ResourceType.Food] = -1f;
 		BuildingStats[t].BaseProductivity[(int)ResourceType.Iron] = 0f;
 		BuildingStats[t].BaseProductivity[(int)ResourceType.Silicon] = 0f;
-		BuildingStats[t].BaseProductivity[(int)ResourceType.Money] = -1f;
+		BuildingStats[t].BaseProductivity[(int)ResourceType.Money] = 0f;
 
 		BuildingStats[t].PerLevelBuildCost[(int)ResourceType.Population] = 2f;
 		BuildingStats[t].PerLevelBuildCost[(int)ResourceType.Happiness] = 1f; // pacifists :D
@@ -122,8 +122,8 @@ public class GameData : MonoBehaviour {
 
 		BuildingStats[t].PerLevelProductivity[(int)ResourceType.Population] = 5f; // in this case, this is the max amount of troops stationed
 		BuildingStats[t].PerLevelProductivity[(int)ResourceType.Happiness] = 0.05f; // people feel stronger when they have a strong army
-		BuildingStats[t].PerLevelProductivity[(int)ResourceType.Energy] = -1f;
-		BuildingStats[t].PerLevelProductivity[(int)ResourceType.Food] = -1f;
+		BuildingStats[t].PerLevelProductivity[(int)ResourceType.Energy] = 0f;
+		BuildingStats[t].PerLevelProductivity[(int)ResourceType.Food] = 0f;
 		BuildingStats[t].PerLevelProductivity[(int)ResourceType.Iron] = 0f;
 		BuildingStats[t].PerLevelProductivity[(int)ResourceType.Silicon] = 0f;
 		BuildingStats[t].PerLevelProductivity[(int)ResourceType.Money] = 0f;
@@ -136,9 +136,9 @@ public class GameData : MonoBehaviour {
 		BuildingStats[t].MultBuildCost[(int)ResourceType.Silicon] = 1.3f;
 		BuildingStats[t].MultBuildCost[(int)ResourceType.Money] = 1.5f;
 
-		BuildingStats[t].MultProductivity[(int)ResourceType.Population] = 1.3f;
+		BuildingStats[t].MultProductivity[(int)ResourceType.Population] = 1.4f;
 		BuildingStats[t].MultProductivity[(int)ResourceType.Happiness] = 1f;
-		BuildingStats[t].MultProductivity[(int)ResourceType.Energy] = 1.3f;
+		BuildingStats[t].MultProductivity[(int)ResourceType.Energy] = 1f;
 		BuildingStats[t].MultProductivity[(int)ResourceType.Food] = 1f;
 		BuildingStats[t].MultProductivity[(int)ResourceType.Iron] = 1f;
 		BuildingStats[t].MultProductivity[(int)ResourceType.Silicon] = 1f;
@@ -287,8 +287,8 @@ public class GameData : MonoBehaviour {
 		// soldiers
 		t = (int)CombatUnitType.Soldier;
 		CombatUnitStats[t] = new CombatUnitData();
-		CombatUnitStats[t].Name = "soldier";
-		CombatUnitStats[t].Description = "A soldier is cheap to train, but\n" +
+		CombatUnitStats[t].Name = "marine";
+		CombatUnitStats[t].Description = "A marine is cheap to train, but\n" +
 										 "only has a little health and damage.";
 
 		CombatUnitStats[t].TrainingCost[(int)ResourceType.Population] = 1f;

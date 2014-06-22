@@ -6,6 +6,7 @@ public static class S {
 	public static bool ClientBuild = true;
 	public static int CitySize = 10;
 	public static float ResourceUpdateTime = 36f;
+	public static float ResourceUpdateMult = ResourceUpdateTime / 3600f;
 
 	public static Color FlashyColor {
 		get {

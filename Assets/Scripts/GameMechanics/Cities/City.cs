@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class City {
 
@@ -11,6 +12,7 @@ public class City {
 	public GameData GameStats;
 
 	public float[] ResourcesInside; // all are floats for stat-over-time purposes
+	public List<CombatUnit> UnitsInside;
 
 	public GameObject BarracksObject;
 	public GameObject EmptySpaceObject;
@@ -34,6 +36,8 @@ public class City {
 		ResourcesInside[(int)ResourceType.Iron] = 100f;
 		ResourcesInside[(int)ResourceType.Silicon] = 100f;
 		ResourcesInside[(int)ResourceType.Money] = 100f;
+
+		UnitsInside = new List<CombatUnit>();
 
 		Name = "City";
 		GameStats = gameData;
@@ -103,7 +107,7 @@ public class City {
 		for (int j = 0; j < S.CitySize; j++) {
 			if (Time.time >= Buildings[i, j].BuildingFinishMoment && Buildings[i, j].isBeingBuilt) {
 				ResourcesInside[(int)ResourceType.Population] += Buildings[i, j].WorkersAtWork;
-				Buildings[i, j].WorkersAtWork = 0;
+				Buildings[i, j].WorkersAtWork = 0f;
 				Buildings[i, j].isBeingBuilt = false;
 			}
 		}
@@ -120,14 +124,19 @@ public class City {
 					break;
 				case ResourceType.Money:
 					if (!Buildings[i, j].isBeingBuilt)
-						moneyGain += GameStats.GetProductivity(Buildings[i, j].type, ResourceType.Money, Buildings[i, j].Level) * Buildings[i, j].WorkersAtWork * S.ResourceUpdateTime / 3600f;
+						moneyGain += GameStats.GetProductivity(Buildings[i, j].type, ResourceType.Money, Buildings[i, j].Level) * Buildings[i, j].WorkersAtWork * S.ResourceUpdateMult;
 					break;
 				default:
 					if (!Buildings[i, j].isBeingBuilt)
-						ResourcesInside[k] += GameStats.GetProductivity(Buildings[i, j].type, (ResourceType)k, Buildings[i, j].Level) * Buildings[i, j].WorkersAtWork * S.ResourceUpdateTime / 3600f;
+						ResourcesInside[k] += GameStats.GetProductivity(Buildings[i, j].type, (ResourceType)k, Buildings[i, j].Level) * Buildings[i, j].WorkersAtWork * S.ResourceUpdateMult;
 					break;
 			}
 		}
+		/*
+		ResourcesInside[(int)ResourceType.Food] -= ResourcesInside[(int)ResourceType.Population] * S.ResourceUpdateMult;
+		ResourcesInside[(int)ResourceType.Energy] -= ResourcesInside[(int)ResourceType.Population] * S.ResourceUpdateMult;
+		ResourcesInside[(int)ResourceType.Population] += ResourcesInside[(int)ResourceType.Happiness] * S.ResourceUpdateMult;
+		*/
 		return moneyGain;
 	}
 }

@@ -22,23 +22,28 @@ public class CamMovement : MonoBehaviour {
 	}
 
 	void Update () {
+		if (!S.ClientBuild)
+			return;
 		if (Application.loadedLevel == 1) {
 			if (prevMenu) {
 				transform.position = startPos;
 				transform.rotation = startRot;
 				prevMenu = false;
 			}
+			float Movement = MovementSpeed * Time.deltaTime;
+			if (Input.GetKey(KeyCode.LeftShift))
+				Movement *= 2f;
 			if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
-				transform.RotateAround(center, Vector3.up, MovementSpeed * Time.deltaTime);
+				transform.RotateAround(center, Vector3.up, Movement);
 			} else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
-				transform.RotateAround(center, Vector3.up, -MovementSpeed * Time.deltaTime);
+				transform.RotateAround(center, Vector3.up, -Movement);
 			}
 			if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {
 				if (transform.position.y < 9f)
-					transform.RotateAround(center, Vector3.Cross(transform.position - center, Vector3.up).normalized, MovementSpeed * Time.deltaTime);
+					transform.RotateAround(center, Vector3.Cross(transform.position - center, Vector3.up).normalized, Movement);
 			} else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
 				if (transform.position.y > 1f)
-					transform.RotateAround(center, Vector3.Cross(transform.position - center, Vector3.up).normalized, -MovementSpeed * Time.deltaTime);
+					transform.RotateAround(center, Vector3.Cross(transform.position - center, Vector3.up).normalized, -Movement);
 			}
 			transform.LookAt(center);
 		} else {
