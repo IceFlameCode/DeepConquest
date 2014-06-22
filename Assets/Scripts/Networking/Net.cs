@@ -128,6 +128,7 @@ public class Net : MonoBehaviour {
 			                Accounts[userID].Cities[i].ResourcesInside[(int)ResourceType.Happiness],
 			                Accounts[userID].Cities[i].ResourcesInside[(int)ResourceType.Money]);
 		}
+		SendUnitsInCities(ticket, userID);
 	}
 
 	[RPC]
@@ -163,6 +164,94 @@ public class Net : MonoBehaviour {
 				hud.AllCitiesLoaded = true;
 			}
 		}
+	}
+
+	void SendUnitsInCities (int ticket, int userID) {
+		for (int i = 0; i < Accounts[userID].Cities.Count; i++) {
+			for (int j = 0; j < Accounts[userID].Cities[i].UnitsInside.Count; j++) {
+				networkView.RPC("RecieveUnitInCity", RPCMode.Others,
+				                ticket, i,
+				                (int)Accounts[userID].Cities[i].UnitsInside[j].Type, Accounts[userID].Cities[i].UnitsInside[j].ID,
+				                Accounts[userID].Cities[i].UnitsInside[j].TrainingFinishTime - Time.time, Accounts[userID].Cities[i].UnitsInside[j].Health,
+				                Accounts[userID].Cities[i].UnitsInside[j].AttackDamage,
+				                Accounts[userID].Cities[i].UnitsInside[j].MovementSpeed, Accounts[userID].Cities[i].UnitsInside[j].AttackTime,
+				                Accounts[userID].Cities[i].UnitsInside[j].MaxCarriedWeight);
+			}
+		}
+	}
+
+	void SendUnitsInUnitTree (int ticket, int cityID, CombatUnit unit) {
+		networkView.RPC("RecieveUnitInUnit", RPCMode.Others,
+		                ticket, cityID,
+		                (int)unit.Type, unit.ID,
+		                unit.TrainingFinishTime - Time.time, unit.Health,
+		                unit.AttackDamage,
+		                unit.MovementSpeed, unit.AttackTime,
+		                unit.MaxCarriedWeight);
+		for (int i = 0; i < unit.CarriedUnits.Count; i++) {
+			SendUnitsInUnitTree(ticket, cityID, unit.CarriedUnits[i]);
+		}
+	}
+
+	[RPC]
+	void RecieveUnitInCity (int ticket, int cityID,
+	                  		int type, int ID,
+	                  		float trainTime, float hp,
+	                        float ad,
+	                  		float moveSpeed, float attackTime,
+	                  		float maxWeight) {
+		if (CurrTicket == ticket) {
+			print("Recieved unit in city!");
+			CombatUnit nu = new CombatUnit();
+			nu.Type = (CombatUnitType)type;
+			nu.ID = ID;
+			nu.TrainingFinishTime = Time.time + trainTime;
+			nu.isBeingTrained = trainTime > 0f;
+			nu.Health = hp;
+			nu.AttackDamage = ad;
+			nu.MovementSpeed = moveSpeed;
+			nu.AttackTime = attackTime;
+			nu.MaxCarriedWeight = maxWeight;
+			CurrentAccount.Cities[cityID].UnitsInside.Add(nu);
+		} // end of ticket check
+	} // end of RPC RecieveUnitInCity(...)
+
+	[RPC]
+	void RecieveUnitInUnit (int ticket, int cityID,
+	                        int type, int ID, int parentID,
+	                        float trainTime, float hp,
+	                        float ad,
+	                        float moveSpeed, float attackTime,
+	                        float maxWeight) {
+		if (CurrTicket == ticket) {
+			CombatUnit nu = new CombatUnit();
+			nu.Type = (CombatUnitType)type;
+			nu.ID = ID;
+			nu.TrainingFinishTime = Time.time + trainTime;
+			nu.isBeingTrained = trainTime > 0f;
+			nu.Health = hp;
+			nu.AttackDamage = ad;
+			nu.MovementSpeed = moveSpeed;
+			nu.AttackTime = attackTime;
+			nu.MaxCarriedWeight = maxWeight;
+			for (int i = 0; i < CurrentAccount.Cities[cityID].UnitsInside.Count; i++) {
+				AddUnitToUnitTree(parentID, CurrentAccount.Cities[cityID].UnitsInside[i], nu);
+			}
+		}
+	} // end of RPC RecieveUnitInUnit(...)
+
+	// scans tree
+	public bool AddUnitToUnitTree (int parentID, CombatUnit unitToScan, CombatUnit unitToBeAdded) {
+		if (unitToScan.ID == parentID) {
+			unitToScan.CarriedUnits.Add(unitToBeAdded);
+			return true;
+		} else {
+			for (int i = 0; i < unitToScan.CarriedUnits.Count; i++) {
+				if (AddUnitToUnitTree(parentID, unitToScan.CarriedUnits[i], unitToBeAdded))
+					return true;
+			}
+		}
+		return false;
 	}
 
 	// called by the client to tell the server that we changed something in the currently viewed city

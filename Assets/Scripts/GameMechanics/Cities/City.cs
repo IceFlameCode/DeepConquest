@@ -38,6 +38,11 @@ public class City {
 		ResourcesInside[(int)ResourceType.Money] = 100f;
 
 		UnitsInside = new List<CombatUnit>();
+		if (!S.ClientBuild) {
+			CombatUnit nu = new CombatUnit();
+			nu.Type = CombatUnitType.Soldier;
+			UnitsInside.Add(nu);
+		}
 
 		Name = "City";
 		GameStats = gameData;

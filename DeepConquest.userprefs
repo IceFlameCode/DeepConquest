@@ -1,14 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\S.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Graphics\HUD\HUD.cs">
     <Files>
-      <File FileName="Assets\Scripts\HUD\HUD.cs" Line="528" Column="74" />
+      <File FileName="Assets\Scripts\Graphics\HUD\HUD.cs" Line="617" Column="38" />
       <File FileName="Assets\Scripts\S.cs" Line="6" Column="39" />
-      <File FileName="Assets\Scripts\GameMechanics\Cities\City.cs" Line="137" Column="120" />
+      <File FileName="Assets\Scripts\GameMechanics\Cities\City.cs" Line="42" Column="37" />
       <File FileName="Assets\Scripts\GameMechanics\Combat\CombatUnitData.cs" Line="24" Column="1" />
-      <File FileName="Assets\Scripts\GameMechanics\Combat\CombatUnit.cs" Line="27" Column="1" />
+      <File FileName="Assets\Scripts\GameMechanics\Combat\CombatUnit.cs" Line="8" Column="16" />
       <File FileName="Assets\Scripts\GameMechanics\GameData.cs" Line="338" Column="1" />
-      <File FileName="Assets\Scripts\Networking\Net.cs" Line="280" Column="1" />
+      <File FileName="Assets\Scripts\Networking\Net.cs" Line="191" Column="54" />
       <File FileName="Assets\Scripts\GameMechanics\Cities\Building.cs" Line="83" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>

@@ -24,11 +24,15 @@ public class HUD : MonoBehaviour {
 	public bool ShowAdvancedStatsWindow = false;
 	public bool ShowFromScratchWindow = false;
 	public bool ShowCityStatsWindow = false;
+	public bool ShowUnitListWindow = false;
+	public bool ShowUnitWindow = false;
 	public Building CurrBuilding;
 	public Rect BuildingWindowRect = new Rect(0f, 100f, 600f, 400f);
 	public Rect AdvancedStatsWindowRect = new Rect(600f, 100f, 600f, 400f);
 	public Rect FromScratchWindowRect = new Rect(600f, 100f, 600f, 400f);
 	public Rect CityStatsWindowRect = new Rect(300f, 100f, 600f, 400f);
+	public Rect UnitListWindowRect = new Rect(600f, 100f, 600f, 400f);
+	public Rect UnitWindowRect = new Rect(0f, 100f, 600f, 400f);
 	
 	public float NextWorkerUpdate = 0f;
 	public float NextResourceUpdate = 0f;
@@ -170,6 +174,14 @@ public class HUD : MonoBehaviour {
 							}
 							if (ShowCityStatsWindow) {
 								CityStatsWindowRect = GUI.Window(currWindowID, CityStatsWindowRect, displayCityStatsWindow, "");
+								currWindowID++;
+							}
+							if (ShowUnitListWindow) {
+								UnitListWindowRect = GUI.Window(currWindowID, UnitListWindowRect, displayUnitListWindow, "");
+								currWindowID++;
+							}
+							if (ShowUnitWindow) {
+								UnitWindowRect = GUI.Window(currWindowID, UnitWindowRect, displayUnitWindow, "");
 								currWindowID++;
 							}
 
@@ -530,8 +542,84 @@ public class HUD : MonoBehaviour {
 		              "%)");
 		GUILayout.EndHorizontal();
 
+		GUILayout.BeginHorizontal();
+		if (GUILayout.Button("Show stationed units")) {
+			ShowUnitListWindow = true;
+		}
+		GUILayout.EndHorizontal();
+
 		GUILayout.EndScrollView();
 
+		GUILayout.EndArea();
+		GUI.DragWindow();
+	}
+
+
+
+	Vector2 unitListWindowScrollPos = new Vector2(0f, 0f);
+	void displayUnitListWindow (int windowID) {
+		GUILayout.BeginArea(new Rect(5f, 5f, UnitListWindowRect.width - 10f, UnitListWindowRect.height - 10f));
+		
+		GUILayout.BeginHorizontal();
+		GUILayout.Box("Stationed units");
+		if (GUILayout.Button("X", GUILayout.MaxWidth(25f))) {
+			ShowUnitListWindow = false;
+		}
+		GUILayout.EndHorizontal();
+		
+		unitListWindowScrollPos = GUILayout.BeginScrollView(unitListWindowScrollPos);
+
+		for (int i = 0; i < MainNet.CurrentAccount.Cities[CurrCityID].UnitsInside.Count; i++) {
+			GUILayout.BeginHorizontal();
+			if (GUILayout.Button(capitalize(GameStats.CombatUnitStats[(int)MainNet.CurrentAccount.Cities[CurrCityID].UnitsInside[i].Type].Name))) {
+				ShowUnitWindow = true;
+				CurrUnit = MainNet.CurrentAccount.Cities[CurrCityID].UnitsInside[i];
+			}
+			GUILayout.EndHorizontal();
+		}
+
+		GUILayout.EndScrollView();
+		
+		GUILayout.EndArea();
+		GUI.DragWindow();
+	}
+
+
+
+	Vector2 unitWindowScrollPos = new Vector2(0f, 0f);
+	public CombatUnit CurrUnit; 
+	void displayUnitWindow (int windowID) {
+		GUILayout.BeginArea(new Rect(5f, 5f, UnitWindowRect.width - 10f, UnitWindowRect.height - 10f));
+		
+		GUILayout.BeginHorizontal();
+		GUILayout.Box("Unit info for " + GameStats.CombatUnitStats[(int)CurrUnit.Type].Name);
+		if (GUILayout.Button("X", GUILayout.MaxWidth(25f))) {
+			ShowUnitWindow = false;
+		}
+		GUILayout.EndHorizontal();
+		
+		unitWindowScrollPos = GUILayout.BeginScrollView(unitWindowScrollPos);
+
+		if (CurrUnit.CarriedUnits.Count > 0) {
+			GUILayout.BeginHorizontal();
+			GUILayout.Box("Carried units:");
+			GUILayout.EndHorizontal();
+
+			for (int i = 0; i < CurrUnit.CarriedUnits.Count; i++) {
+				GUILayout.BeginHorizontal();
+				if (GUILayout.Button(capitalize(GameStats.CombatUnitStats[(int)CurrUnit.CarriedUnits[i].Type].Name))) {
+					CurrUnit = CurrUnit.CarriedUnits[i];
+				}
+				GUILayout.EndHorizontal();
+			}
+		} else {
+			GUILayout.BeginHorizontal();
+			GUILayout.Box("No units carried");
+			GUILayout.EndHorizontal();
+		}
+		
+		GUILayout.EndScrollView();
+		
 		GUILayout.EndArea();
 		GUI.DragWindow();
 	}
